@@ -18,7 +18,7 @@
 	import { Heading, Subheading } from '$lib/components/base/heading';
 	import NumberInput from '$lib/components/base/number-input/NumberInput.svelte';
 	import { Input } from '$lib/components/base/input';
-	import { modals } from '$lib/room/ui-state.svelte';
+	import { modals, wallVisibility } from '$lib/room/ui-state.svelte';
 	import { blueskyLoginModalState } from '$lib/components/base/modal/BlueskyLoginModal.svelte';
 	import { toast } from 'svelte-sonner';
 	import Picker from './ObjectPicker.svelte';
@@ -430,6 +430,63 @@
 			/>
 		</Popover.Content>
 	</Popover.Root>
+
+	<div class="mt-4 grid grid-cols-3 grid-rows-3 gap-0.5">
+		<div></div>
+		<button
+			class="flex size-8 items-center justify-center rounded-lg text-xs font-bold transition-all {wallVisibility.N
+				? 'bg-base-300/50 dark:bg-base-700/50 text-base-900 dark:text-base-50'
+				: 'bg-base-300/20 dark:bg-base-800/30 text-base-400 dark:text-base-600 line-through'}"
+			onclick={() => (wallVisibility.N = !wallVisibility.N)}
+		>
+			N
+		</button>
+		<div></div>
+		<button
+			class="flex size-8 items-center justify-center rounded-lg text-xs font-bold transition-all {wallVisibility.W
+				? 'bg-base-300/50 dark:bg-base-700/50 text-base-900 dark:text-base-50'
+				: 'bg-base-300/20 dark:bg-base-800/30 text-base-400 dark:text-base-600 line-through'}"
+			onclick={() => (wallVisibility.W = !wallVisibility.W)}
+		>
+			W
+		</button>
+		<div
+			class="flex size-8 items-center justify-center rounded-lg bg-base-200/30 dark:bg-base-800/20"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="1.5"
+				stroke="currentColor"
+				class="size-3 text-base-400 dark:text-base-600"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+				/>
+			</svg>
+		</div>
+		<button
+			class="flex size-8 items-center justify-center rounded-lg text-xs font-bold transition-all {wallVisibility.E
+				? 'bg-base-300/50 dark:bg-base-700/50 text-base-900 dark:text-base-50'
+				: 'bg-base-300/20 dark:bg-base-800/30 text-base-400 dark:text-base-600 line-through'}"
+			onclick={() => (wallVisibility.E = !wallVisibility.E)}
+		>
+			E
+		</button>
+		<div></div>
+		<button
+			class="flex size-8 items-center justify-center rounded-lg text-xs font-bold transition-all {wallVisibility.S
+				? 'bg-base-300/50 dark:bg-base-700/50 text-base-900 dark:text-base-50'
+				: 'bg-base-300/20 dark:bg-base-800/30 text-base-400 dark:text-base-600 line-through'}"
+			onclick={() => (wallVisibility.S = !wallVisibility.S)}
+		>
+			S
+		</button>
+		<div></div>
+	</div>
 </div>
 
 <Modal bind:open={modals.roomSettingsModalState}>
@@ -469,7 +526,7 @@
 			<NumberInput
 				bind:value={roomState.size.x}
 				min={1}
-				max={3}
+				max={10}
 				onchange={() => saveRoomToLocalStorage()}
 			/>
 			<span class="text-accent-700 dark:text-accent-300">
@@ -487,7 +544,7 @@
 			<NumberInput
 				bind:value={roomState.size.z}
 				min={1}
-				max={3}
+				max={10}
 				onchange={() => saveRoomToLocalStorage()}
 			/>
 		</div>

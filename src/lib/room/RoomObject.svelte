@@ -20,7 +20,7 @@
 		opacity?: number;
 		rotation?: number;
 		isEditing?: boolean;
-		placement?: 'floor' | 'wallX' | 'wallZ';
+		placement?: 'floor' | 'wallX' | 'wallZ' | 'wallX2' | 'wallZ2';
 	} & Props<THREE.Group> = $props();
 
 	let ObjectComponent = AllObjects[kind]?.component;
@@ -36,9 +36,12 @@
 		{isEditing}
 		scale={scale ?? AllObjects[kind]?.scale ?? 1}
 		rotation={[
-			placement === 'wallX' ? (rotation ?? 0) : 0,
-			(placement === 'floor' ? (rotation ?? 0) : 0) + (placement === 'wallX' ? Math.PI / 2 : 0),
-			placement === 'wallZ' ? (rotation ?? 0) : 0
+			placement === 'wallX' ? (rotation ?? 0) : placement === 'wallX2' ? -(rotation ?? 0) : 0,
+			(placement === 'floor' ? (rotation ?? 0) : 0)
+				+ (placement === 'wallX' ? Math.PI / 2 : 0)
+				+ (placement === 'wallX2' ? -Math.PI / 2 : 0)
+				+ (placement === 'wallZ2' ? Math.PI : 0),
+			placement === 'wallZ' ? (rotation ?? 0) : placement === 'wallZ2' ? -(rotation ?? 0) : 0
 		]}
 		{placement}
 	/>

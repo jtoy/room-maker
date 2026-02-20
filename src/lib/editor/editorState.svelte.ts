@@ -25,9 +25,9 @@ export function applyTransformOfSelected() {
 		editorState.transformControls.object.position.z
 	];
 
-	if (editorState.selectedObject.placement === 'wallX') {
+	if (editorState.selectedObject.placement === 'wallX' || editorState.selectedObject.placement === 'wallX2') {
 		editorState.selectedObject.rotation = editorState.transformControls.object.rotation.x;
-	} else if (editorState.selectedObject.placement === 'wallZ') {
+	} else if (editorState.selectedObject.placement === 'wallZ' || editorState.selectedObject.placement === 'wallZ2') {
 		editorState.selectedObject.rotation = editorState.transformControls.object.rotation.z;
 	} else {
 		editorState.selectedObject.rotation = editorState.transformControls.object.rotation.y;

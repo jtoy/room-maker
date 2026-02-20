@@ -89,8 +89,6 @@
 	<OrbitControls
 		maxDistance={20}
 		maxPolarAngle={Math.PI / 2}
-		maxAzimuthAngle={2}
-		minAzimuthAngle={-1}
 	/>
 </T.PerspectiveCamera>
 

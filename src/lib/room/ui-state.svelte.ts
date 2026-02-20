@@ -6,3 +6,22 @@ export const modals = $state({
 	successModalState: false,
 	signInSuccessModalState: false
 });
+
+export const wallVisibility = $state({
+	N: true,
+	S: true,
+	E: true,
+	W: true
+});
+
+const placementToWall: Record<string, keyof typeof wallVisibility> = {
+	wallZ: 'N',
+	wallZ2: 'S',
+	wallX: 'W',
+	wallX2: 'E'
+};
+
+export function isObjectVisible(placement: string): boolean {
+	const wall = placementToWall[placement];
+	return !wall || wallVisibility[wall];
+}

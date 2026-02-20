@@ -3,6 +3,7 @@
 	import { type RoomStateType } from './state.svelte';
 	import RoomObject from './RoomObject.svelte';
 	import { RoundedBoxGeometry } from '@threlte/extras';
+	import { wallVisibility, isObjectVisible } from './ui-state.svelte';
 
 	let {
 		roomState = $bindable()
@@ -12,15 +13,33 @@
 </script>
 
 <T.Group position.y={-1}>
-	<T.Mesh position={[-0.05, 1 - 0.099, -roomState.size.x / 2 - 0.1]} receiveShadow castShadow>
-		<RoundedBoxGeometry args={[roomState.size.z + 0.18, 2, 0.1]} radius={0.03} />
-		<T.MeshStandardMaterial color={roomState.wallColor} />
-	</T.Mesh>
+	{#if wallVisibility.N}
+		<T.Mesh position={[-0.05, 1 - 0.099, -roomState.size.x / 2 - 0.1]} receiveShadow castShadow>
+			<RoundedBoxGeometry args={[roomState.size.z + 0.18, 2, 0.1]} radius={0.03} />
+			<T.MeshStandardMaterial color={roomState.wallColor} />
+		</T.Mesh>
+	{/if}
 
-	<T.Mesh position={[-roomState.size.z / 2 - 0.1, 1 - 0.099, -0.05]} receiveShadow castShadow>
-		<RoundedBoxGeometry args={[0.1, 2, roomState.size.x + 0.18]} radius={0.03} />
-		<T.MeshStandardMaterial color={roomState.wallColor} />
-	</T.Mesh>
+	{#if wallVisibility.W}
+		<T.Mesh position={[-roomState.size.z / 2 - 0.1, 1 - 0.099, -0.05]} receiveShadow castShadow>
+			<RoundedBoxGeometry args={[0.1, 2, roomState.size.x + 0.18]} radius={0.03} />
+			<T.MeshStandardMaterial color={roomState.wallColor} />
+		</T.Mesh>
+	{/if}
+
+	{#if wallVisibility.S}
+		<T.Mesh position={[-0.05, 1 - 0.099, roomState.size.x / 2]} receiveShadow castShadow>
+			<RoundedBoxGeometry args={[roomState.size.z + 0.18, 2, 0.1]} radius={0.03} />
+			<T.MeshStandardMaterial color={roomState.wallColor} />
+		</T.Mesh>
+	{/if}
+
+	{#if wallVisibility.E}
+		<T.Mesh position={[roomState.size.z / 2, 1 - 0.099, -0.05]} receiveShadow castShadow>
+			<RoundedBoxGeometry args={[0.1, 2, roomState.size.x + 0.18]} radius={0.03} />
+			<T.MeshStandardMaterial color={roomState.wallColor} />
+		</T.Mesh>
+	{/if}
 
 	<T.Mesh position={[-0.05, -0.0502, -0.05]} receiveShadow>
 		<RoundedBoxGeometry
@@ -31,6 +50,8 @@
 	</T.Mesh>
 
 	{#each roomState.objects as object, index (object.kind + index.toString())}
-		<RoomObject {...object} />
+		{#if isObjectVisible(object.placement)}
+			<RoomObject {...object} />
+		{/if}
 	{/each}
 </T.Group>

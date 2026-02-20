@@ -2,18 +2,17 @@
 
 tiny 3d rooms saved in your bluesky account
 
-live here: https://flo-bit.dev/room
+live here: URL
 
 work in progress
 
 ## Credits
-
+- originall based off flo-bit
 - made with svelte, threlte (three.js), tailwindcss
 - assets by [Kay Lousberg](https://kaylousberg.itch.io/furniture-bits) and [Isa Lousberg](https://tinytreats.itch.io/bubbly-bathroom)
 - color picker from [svelte-color-select](https://github.com/CaptainCodeman/svelte-color-select)
-- ui from my own [ui-kit](https://github.com/flo-bit/ui-kit) which is based on [bits-ui](https://bits-ui.com/)
+- ui from  [ui-kit](https://github.com/flo-bit/ui-kit) which is based on [bits-ui](https://bits-ui.com/)
 - bluesky login made possible by [atcute](https://github.com/mary-ext/atcute)
-- (old version: assets by [kenney](https://kenney.nl/assets/furniture-kit))
 
 ### todo
 

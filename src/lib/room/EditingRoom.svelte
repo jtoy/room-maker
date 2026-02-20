@@ -10,86 +10,189 @@
 		placeObject,
 		applyTransformOfSelected
 	} from '$lib/editor/editorState.svelte';
+	import { wallVisibility, isObjectVisible } from './ui-state.svelte';
 
 	type PointerEvent = {
 		stopPropagation: () => void;
 		point: { x: number; y: number; z: number };
 		normal: { x: number; y: number; z: number };
 	};
+
+	const defaultRaycast = THREE.Mesh.prototype.raycast;
+	const noopRaycast = () => {};
+
+	let wallMeshN: THREE.Mesh | undefined = $state();
+	let wallMeshW: THREE.Mesh | undefined = $state();
+	let wallMeshS: THREE.Mesh | undefined = $state();
+	let wallMeshE: THREE.Mesh | undefined = $state();
+
+	let isPlacingWall = $derived(getPossiblePlacementForPlacingObject() === 'wall');
+
+	$effect(() => {
+		const raycast = isPlacingWall ? defaultRaycast : noopRaycast;
+		if (wallMeshN) wallMeshN.raycast = raycast;
+		if (wallMeshW) wallMeshW.raycast = raycast;
+		if (wallMeshS) wallMeshS.raycast = raycast;
+		if (wallMeshE) wallMeshE.raycast = raycast;
+	});
 </script>
 
 <T.Group position.y={-1}>
-	<T.Mesh
-		onpointermove={(e: PointerEvent) => {
-			if (getPossiblePlacementForPlacingObject() !== 'wall') return;
+	{#if wallVisibility.N}
+		<T.Mesh
+			oncreate={(ref) => { wallMeshN = ref; }}
+			onpointermove={(e: PointerEvent) => {
+				if (getPossiblePlacementForPlacingObject() !== 'wall') return;
 
-			e.stopPropagation();
+				e.stopPropagation();
 
-			if (editorState.placingObject) {
-				editorState.placingObject.placement = 'wallZ';
-				editorState.placingObject.position = [e.point.x, e.point.y + 1, e.point.z];
-			}
-		}}
-		onclick={(e: PointerEvent) => {
-			if (getPossiblePlacementForPlacingObject() !== 'wall') return;
+				if (editorState.placingObject) {
+					editorState.placingObject.placement = 'wallZ';
+					editorState.placingObject.position = [e.point.x, e.point.y + 1, e.point.z];
+				}
+			}}
+			onclick={(e: PointerEvent) => {
+				if (getPossiblePlacementForPlacingObject() !== 'wall') return;
 
-			e.stopPropagation();
+				e.stopPropagation();
 
-			if (editorState.placingObject) {
-				editorState.placingObject.placement = 'wallZ';
-				placeObject({ x: e.point.x, y: e.point.y + 1, z: e.point.z });
-			}
-		}}
-		position={[-0.05, 1 - 0.099, -roomState.size.x / 2 - 0.1]}
-		receiveShadow
-		castShadow
-		ondblclick={() => {
-			if (editorState.selectedObject) {
-				applyTransformOfSelected();
+				if (editorState.placingObject) {
+					editorState.placingObject.placement = 'wallZ';
+					placeObject({ x: e.point.x, y: e.point.y + 1, z: e.point.z });
+				}
+			}}
+			position={[-0.05, 1 - 0.099, -roomState.size.x / 2 - 0.1]}
+			receiveShadow
+			castShadow
+			ondblclick={() => {
+				if (editorState.selectedObject) {
+					applyTransformOfSelected();
 
-				editorState.selectedObject = null;
-			}
-		}}
-	>
-		<RoundedBoxGeometry args={[roomState.size.z + 0.18, 2, 0.1]} radius={0.03} />
-		<T.MeshStandardMaterial color={roomState.wallColor} />
-	</T.Mesh>
+					editorState.selectedObject = null;
+				}
+			}}
+		>
+			<RoundedBoxGeometry args={[roomState.size.z + 0.18, 2, 0.1]} radius={0.03} />
+			<T.MeshStandardMaterial color={roomState.wallColor} />
+		</T.Mesh>
+	{/if}
 
-	<T.Mesh
-		onpointermove={(e: PointerEvent) => {
-			if (getPossiblePlacementForPlacingObject() !== 'wall') return;
+	{#if wallVisibility.W}
+		<T.Mesh
+			oncreate={(ref) => { wallMeshW = ref; }}
+			onpointermove={(e: PointerEvent) => {
+				if (getPossiblePlacementForPlacingObject() !== 'wall') return;
 
-			e.stopPropagation();
+				e.stopPropagation();
 
-			if (editorState.placingObject) {
-				editorState.placingObject.placement = 'wallX';
-				editorState.placingObject.position = [e.point.x, e.point.y + 1, e.point.z];
-			}
-		}}
-		onclick={(e: PointerEvent) => {
-			if (getPossiblePlacementForPlacingObject() !== 'wall') return;
+				if (editorState.placingObject) {
+					editorState.placingObject.placement = 'wallX';
+					editorState.placingObject.position = [e.point.x, e.point.y + 1, e.point.z];
+				}
+			}}
+			onclick={(e: PointerEvent) => {
+				if (getPossiblePlacementForPlacingObject() !== 'wall') return;
 
-			e.stopPropagation();
+				e.stopPropagation();
 
-			if (editorState.placingObject) {
-				editorState.placingObject.placement = 'wallX';
-				placeObject({ x: e.point.x, y: e.point.y + 1, z: e.point.z });
-			}
-		}}
-		position={[-roomState.size.z / 2 - 0.1, 1 - 0.099, -0.05]}
-		receiveShadow
-		castShadow
-		ondblclick={() => {
-			if (editorState.selectedObject) {
-				applyTransformOfSelected();
+				if (editorState.placingObject) {
+					editorState.placingObject.placement = 'wallX';
+					placeObject({ x: e.point.x, y: e.point.y + 1, z: e.point.z });
+				}
+			}}
+			position={[-roomState.size.z / 2 - 0.1, 1 - 0.099, -0.05]}
+			receiveShadow
+			castShadow
+			ondblclick={() => {
+				if (editorState.selectedObject) {
+					applyTransformOfSelected();
 
-				editorState.selectedObject = null;
-			}
-		}}
-	>
-		<RoundedBoxGeometry args={[0.1, 2, roomState.size.x + 0.18]} radius={0.03} />
-		<T.MeshStandardMaterial color={roomState.wallColor} />
-	</T.Mesh>
+					editorState.selectedObject = null;
+				}
+			}}
+		>
+			<RoundedBoxGeometry args={[0.1, 2, roomState.size.x + 0.18]} radius={0.03} />
+			<T.MeshStandardMaterial color={roomState.wallColor} />
+		</T.Mesh>
+	{/if}
+
+	{#if wallVisibility.S}
+		<T.Mesh
+			oncreate={(ref) => { wallMeshS = ref; }}
+			onpointermove={(e: PointerEvent) => {
+				if (getPossiblePlacementForPlacingObject() !== 'wall') return;
+
+				e.stopPropagation();
+
+				if (editorState.placingObject) {
+					editorState.placingObject.placement = 'wallZ2';
+					editorState.placingObject.position = [e.point.x, e.point.y + 1, e.point.z];
+				}
+			}}
+			onclick={(e: PointerEvent) => {
+				if (getPossiblePlacementForPlacingObject() !== 'wall') return;
+
+				e.stopPropagation();
+
+				if (editorState.placingObject) {
+					editorState.placingObject.placement = 'wallZ2';
+					placeObject({ x: e.point.x, y: e.point.y + 1, z: e.point.z });
+				}
+			}}
+			position={[-0.05, 1 - 0.099, roomState.size.x / 2]}
+			receiveShadow
+			castShadow
+			ondblclick={() => {
+				if (editorState.selectedObject) {
+					applyTransformOfSelected();
+
+					editorState.selectedObject = null;
+				}
+			}}
+		>
+			<RoundedBoxGeometry args={[roomState.size.z + 0.18, 2, 0.1]} radius={0.03} />
+			<T.MeshStandardMaterial color={roomState.wallColor} />
+		</T.Mesh>
+	{/if}
+
+	{#if wallVisibility.E}
+		<T.Mesh
+			oncreate={(ref) => { wallMeshE = ref; }}
+			onpointermove={(e: PointerEvent) => {
+				if (getPossiblePlacementForPlacingObject() !== 'wall') return;
+
+				e.stopPropagation();
+
+				if (editorState.placingObject) {
+					editorState.placingObject.placement = 'wallX2';
+					editorState.placingObject.position = [e.point.x, e.point.y + 1, e.point.z];
+				}
+			}}
+			onclick={(e: PointerEvent) => {
+				if (getPossiblePlacementForPlacingObject() !== 'wall') return;
+
+				e.stopPropagation();
+
+				if (editorState.placingObject) {
+					editorState.placingObject.placement = 'wallX2';
+					placeObject({ x: e.point.x, y: e.point.y + 1, z: e.point.z });
+				}
+			}}
+			position={[roomState.size.z / 2, 1 - 0.099, -0.05]}
+			receiveShadow
+			castShadow
+			ondblclick={() => {
+				if (editorState.selectedObject) {
+					applyTransformOfSelected();
+
+					editorState.selectedObject = null;
+				}
+			}}
+		>
+			<RoundedBoxGeometry args={[0.1, 2, roomState.size.x + 0.18]} radius={0.03} />
+			<T.MeshStandardMaterial color={roomState.wallColor} />
+		</T.Mesh>
+	{/if}
 
 	<Grid
 		gridSize={[roomState.size.z * 2, roomState.size.x * 2]}
@@ -134,16 +237,18 @@
 	</T.Mesh>
 
 	{#each roomState.objects as object, index (object.kind + index.toString())}
-		{#if editorState.selectedObject === object}
+		{#if !isObjectVisible(object.placement)}
+			<!-- hidden with wall -->
+		{:else if editorState.selectedObject === object}
 			<TransformControls
 				bind:controls={editorState.transformControls}
 				position={object.position}
-				showX={object.placement !== 'wallX'}
-				showZ={object.placement !== 'wallZ'}
+				showX={object.placement !== 'wallX' && object.placement !== 'wallX2'}
+				showZ={object.placement !== 'wallZ' && object.placement !== 'wallZ2'}
 				rotation={[
-					object.placement === 'wallX' ? object.rotation : 0,
+					object.placement === 'wallX' || object.placement === 'wallX2' ? object.rotation : 0,
 					object.placement === 'floor' ? object.rotation : 0,
-					object.placement === 'wallZ' ? object.rotation : 0
+					object.placement === 'wallZ' || object.placement === 'wallZ2' ? object.rotation : 0
 				]}
 				enableRotate={false}
 				onchange={(e) => {

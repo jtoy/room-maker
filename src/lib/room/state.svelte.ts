@@ -46,7 +46,7 @@ export type RoomObjectData = {
 	position: [number, number, number];
 	rotation: number;
 	colors: string[];
-	placement: 'floor' | 'wallX' | 'wallZ';
+	placement: 'floor' | 'wallX' | 'wallZ' | 'wallX2' | 'wallZ2';
 	link?: string;
 	image?: string | BlueskyBlob;
 };
