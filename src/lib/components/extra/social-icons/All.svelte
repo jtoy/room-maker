@@ -3,7 +3,6 @@
 	import Github from './Github.svelte';
 	import Twitter from './Twitter.svelte';
 	import Youtube from './Youtube.svelte';
-	import Bluesky from './Bluesky.svelte';
 	import Facebook from './Facebook.svelte';
 
 	const {
@@ -11,7 +10,6 @@
 		github,
 		twitter,
 		youtube,
-		bluesky,
 		facebook,
 		svgClasses
 	}: {
@@ -19,7 +17,6 @@
 		github?: string;
 		twitter?: string;
 		youtube?: string;
-		bluesky?: string;
 		facebook?: string;
 		svgClasses?: string;
 	} = $props();
@@ -37,9 +34,6 @@
 	{/if}
 	{#if youtube}
 		<Youtube href={youtube} {svgClasses} />
-	{/if}
-	{#if bluesky}
-		<Bluesky href={bluesky} {svgClasses} />
 	{/if}
 	{#if facebook}
 		<Facebook href={facebook} {svgClasses} />

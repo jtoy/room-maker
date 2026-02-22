@@ -1,7 +1,5 @@
 import { type RoomObjectKind } from './models';
 
-import type { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs';
-
 export const currentVersion = 0;
 
 export type RoomStateType = {
@@ -14,8 +12,6 @@ export type RoomStateType = {
 	id: number;
 
 	version: number;
-
-	profile?: ProfileViewDetailed;
 };
 
 export const roomState: RoomStateType = $state({
@@ -31,16 +27,6 @@ export const roomState: RoomStateType = $state({
 	version: currentVersion
 });
 
-export type BlueskyBlob = {
-	$type: 'blob';
-	ref: {
-		$link: string;
-	};
-	mimeType: string;
-	size: number;
-	did: string;
-};
-
 export type RoomObjectData = {
 	kind: RoomObjectKind;
 	position: [number, number, number];
@@ -48,5 +34,5 @@ export type RoomObjectData = {
 	colors: string[];
 	placement: 'floor' | 'wallX' | 'wallZ' | 'wallX2' | 'wallZ2';
 	link?: string;
-	image?: string | BlueskyBlob;
+	image?: string;
 };

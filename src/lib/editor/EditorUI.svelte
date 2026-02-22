@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/base/button';
 	import { AllObjects } from '$lib/room/models';
-	import { client } from '$lib/oauth';
 	import { roomState } from '$lib/room/state.svelte';
 	import ColorPickerPopover from './ColorPickerPopover.svelte';
 
@@ -19,13 +18,10 @@
 	import NumberInput from '$lib/components/base/number-input/NumberInput.svelte';
 	import { Input } from '$lib/components/base/input';
 	import { modals, wallVisibility } from '$lib/room/ui-state.svelte';
-	import { blueskyLoginModalState } from '$lib/components/base/modal/BlueskyLoginModal.svelte';
 	import { toast } from 'svelte-sonner';
 	import Picker from './ObjectPicker.svelte';
 	import ImageSelector from './ImageSelector.svelte';
-	import { logout, saveRoomToBluesky } from '$lib/oauth/auth.svelte';
 	import { onMount } from 'svelte';
-	import { loadRoomFromBluesky } from '$lib/room/bluesky';
 	import {
 		editorState,
 		saveRoomToLocalStorage,
@@ -123,13 +119,6 @@
 		}
 	}
 
-	async function saveRoom() {
-		applyTransformOfSelected();
-
-		editorState.selectedObject = null;
-
-		return saveRoomToBluesky(roomState);
-	}
 </script>
 
 <Button
@@ -361,38 +350,6 @@
 	{/if}
 </div>
 <div class="fixed top-4 right-4 -z-10 flex flex-col items-end gap-2">
-	{#if !client || !client.isLoggedIn}
-		<Button
-			onclick={() => {
-				applyTransformOfSelected();
-
-				blueskyLoginModalState.open = true;
-			}}
-		>
-			<svg
-				role="img"
-				viewBox="0 0 24 24"
-				xmlns="http://www.w3.org/2000/svg"
-				aria-hidden="true"
-				fill="currentColor"
-				><path
-					d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z"
-				/></svg
-			>
-			Login</Button
-		>
-	{:else}
-		<Button
-			onclick={() => {
-				toast.promise(saveRoom(), {
-					loading: 'Saving...',
-					success: 'Room saved to your profile',
-					error: 'Failed to save room, please try again'
-				});
-			}}>Save & Share</Button
-		>
-	{/if}
-
 	<Popover.Root>
 		<Popover.Trigger class={cn('mt-5 ml-1 cursor-pointer')}>
 			<div
@@ -499,26 +456,12 @@
 				onclick={() => {
 					applyTransformOfSelected();
 					editorState.selectedObject = null;
-					// @ts-ignore
-					roomState.profile = client.profile;
 					editorState.isEditing = false;
 					modals.roomSettingsModalState = false;
 				}}
 			>
 				Stop editing & Preview
 			</Button>
-
-			{#if client.isLoggedIn}
-				<Button
-					variant="secondary"
-					onclick={async () => {
-						await logout();
-						window.location.reload();
-					}}
-				>
-					Logout
-				</Button>
-			{/if}
 		</div>
 
 		<Subheading class="mt-2">Room Size</Subheading>
@@ -617,23 +560,7 @@
 				Import from json
 			</Button>
 
-			{#if client.isLoggedIn}
 				<Button
-					variant="red"
-					onclick={async () => {
-						if (!client.profile?.handle) {
-							console.error('no handle found');
-							return;
-						}
-						await loadRoomFromBluesky(client.profile.handle);
-						modals.roomSettingsModalState = false;
-					}}
-				>
-					Load from bluesky
-				</Button>
-			{/if}
-
-			<Button
 				variant="red"
 				onclick={() => {
 					roomState.objects = [];
@@ -665,67 +592,6 @@
 			}}>Save</Button
 		>
 	</div>
-</Modal>
-
-<Modal bind:open={modals.successModalState}>
-	<Heading class="flex items-center gap-4">
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-			stroke-width="1.5"
-			stroke="currentColor"
-			class="text-accent-600 dark:text-accent-400 size-8"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-			/>
-		</svg>
-
-		Room saved to your profile</Heading
-	>
-	<Button
-		size="lg"
-		class="mt-4 py-3"
-		href={'https://bsky.app/intent/compose?text=' +
-			encodeURIComponent(
-				`Check out my tiny room: https://flo-bit.dev/room/?handle=${client.profile?.handle}`
-			)}
-		target="_blank"
-	>
-		<svg
-			role="img"
-			viewBox="0 0 24 24"
-			xmlns="http://www.w3.org/2000/svg"
-			aria-hidden="true"
-			fill="currentColor"
-			><path
-				d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z"
-			/></svg
-		>
-		Share on Bluesky</Button
-	>
-
-	<Button
-		variant="secondary"
-		class="py-3"
-		onclick={() => {
-			navigator.clipboard.writeText(`https://flo-bit.dev/room/?handle=${client.profile?.handle}`);
-			toast.success('Share link copied to clipboard');
-		}}
-	>
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-			<path
-				fill-rule="evenodd"
-				d="M19.902 4.098a3.75 3.75 0 0 0-5.304 0l-4.5 4.5a3.75 3.75 0 0 0 1.035 6.037.75.75 0 0 1-.646 1.353 5.25 5.25 0 0 1-1.449-8.45l4.5-4.5a5.25 5.25 0 1 1 7.424 7.424l-1.757 1.757a.75.75 0 1 1-1.06-1.06l1.757-1.757a3.75 3.75 0 0 0 0-5.304Zm-7.389 4.267a.75.75 0 0 1 1-.353 5.25 5.25 0 0 1 1.449 8.45l-4.5 4.5a5.25 5.25 0 1 1-7.424-7.424l1.757-1.757a.75.75 0 1 1 1.06 1.06l-1.757 1.757a3.75 3.75 0 1 0 5.304 5.304l4.5-4.5a3.75 3.75 0 0 0-1.035-6.037.75.75 0 0 1-.354-1Z"
-				clip-rule="evenodd"
-			/>
-		</svg>
-
-		Copy share link</Button
-	>
 </Modal>
 
 <Picker bind:selectCategoryModalOpen={modals.selectCategoryModalOpen} />

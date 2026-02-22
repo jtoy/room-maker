@@ -1,6 +1,6 @@
 # Room
 
-tiny 3d rooms saved in your bluesky account
+tiny 3d rooms
 
 live here: URL
 
@@ -12,7 +12,6 @@ work in progress
 - assets by [Kay Lousberg](https://kaylousberg.itch.io/furniture-bits) and [Isa Lousberg](https://tinytreats.itch.io/bubbly-bathroom)
 - color picker from [svelte-color-select](https://github.com/CaptainCodeman/svelte-color-select)
 - ui from  [ui-kit](https://github.com/flo-bit/ui-kit) which is based on [bits-ui](https://bits-ui.com/)
-- bluesky login made possible by [atcute](https://github.com/mary-ext/atcute)
 
 ### todo
 
@@ -20,12 +19,11 @@ work in progress
 - add animations
 - add a day/night cycle?
 - allow uploading custom models
-- add modal for first visit (without handle) -> create your own room, see my room
 - add tutorial
 - resize objects in picker to perfectly fit
-- add sign out button
 - move preview button to main screen
 - add undo button
+- https://chatgpt.com/c/6997bbaf-e038-8325-b712-856e3613e4c0
 
 ### bugs
 

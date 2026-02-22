@@ -3,19 +3,16 @@
 	import { HTML } from '@threlte/extras';
 	import type * as THREE from 'three';
 	import { getImage } from '../images.svelte';
-	import { getImageBlobUrl } from '$lib/oauth/auth.svelte';
 
 	let {
 		ref = $bindable(),
 		size = [270, 150],
 		image,
-		did,
 		...props
 	}: Props<THREE.Group> & {
 		ref?: THREE.Group;
 		size?: [number, number];
 		image?: string;
-		did?: string;
 	} = $props();
 
 	let myImage = $derived.by(() => {
@@ -23,10 +20,6 @@
 
 		if (typeof image === 'string' && image.startsWith('local:')) {
 			return getImage(image.replace('local:', ''));
-			// @ts-ignore
-		} else if (typeof image === 'object' && image.$type === 'blob') {
-			// @ts-ignore
-			return getImageBlobUrl({ did: image.did, link: image.ref.$link });
 		}
 		return null;
 	});

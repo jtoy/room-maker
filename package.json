@@ -1,5 +1,5 @@
 {
-	"name": "bluesky-house",
+	"name": "room",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -38,9 +38,6 @@
 		"vite-plugin-glsl": "^1.3.3"
 	},
 	"dependencies": {
-		"@atcute/client": "^2.0.8",
-		"@atcute/oauth-browser-client": "^1.0.15",
-		"@atproto/api": "^0.14.7",
 		"@number-flow/svelte": "^0.3.3",
 		"@sveltejs/adapter-static": "^3.0.8",
 		"@texel/color": "^1.1.9",
