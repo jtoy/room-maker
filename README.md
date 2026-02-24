@@ -7,7 +7,7 @@ live here: URL
 work in progress
 
 ## Credits
-- originall based off flo-bit
+- originally based off flo-bit
 - made with svelte, threlte (three.js), tailwindcss
 - assets by [Kay Lousberg](https://kaylousberg.itch.io/furniture-bits) and [Isa Lousberg](https://tinytreats.itch.io/bubbly-bathroom)
 - color picker from [svelte-color-select](https://github.com/CaptainCodeman/svelte-color-select)
